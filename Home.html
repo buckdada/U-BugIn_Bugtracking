@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Homestyle.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <aside id="logo">UBUGIN</aside>
+            <ul>
+                <li>
+                    <a href="#" id="btn-dashboard">Dashboard</a>  
+                </li>
+                <li><a href="#" id="btn-issues">Issues</a></li>
+                <li><a href="#" id="btn-people">People</a></li>
+                <li><a href="#" id="btn-project">Project</a></li>
+            </ul>
+        </nav>
+        <main>
+            <header class="headbar"><div>space</div><div class="profile"></div></header>
+            <section id="Dashboard" class="view">
+                <div class="calculatedinfo">
+                <section class="infocard">Total issues</section>
+                <section class="infocard">Total project</section>
+                <section class="infocard">Available people</section>
+            </div>
+            <article>
+                <canvas id="barchart"></canvas>
+                <canvas id="pie"></canvas>
+            </article>
+            </section>
+            <section id="Issues" class="view">Hello issues</section>
+            <section id="People" class="view">Hello people</section>
+            <section id="Projects" class="view">UGH Projects</section>
+    
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="Homeapp.js"></script>
+</body>
+</html>
