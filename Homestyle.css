@@ -1,21 +1,41 @@
 body
 {
-    background-color: #121212;
+    overflow: hidden;
 }
 
 .container
 {
     display: flex;
-    width: auto;
-    gap: 50px;
+    height: 100vh; /* Fill the screen height */
+    width: 100vw;  /* Fill the screen width */
+    overflow: hidden;
+    gap: 0px;
+}
+
+main
+{
+    flex-grow: 1; /* This pushes the content to fill the right side */
+    overflow-y: auto; /* Adds a scrollbar only to the content area */
+    padding: 10px 30px 10px 10px;
 }
 
 .headbar
 {
     display: flex;
     justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background-color: #24262d;
+    border-radius: 12px;
     height: 50px;
-    width: auto;
+    width: 100%;
+}
+
+.pagetitle
+{
+    margin: 0;
+    padding: 10px;
+    color: aliceblue;
 }
 
 .profile
@@ -26,78 +46,122 @@ body
     background-size: cover;   
     background-position: center;
     background-image: url(profile.jpeg);
+    cursor: pointer;
 }
 
 .view 
 {
-    padding: 20px;
     width: 100%;
-}
-
-ul li a
-{
-    text-decoration: none;
-    font-size: 20px;
-    color: #9e9e9e;
-    transition: 0.2s;
-    
-}
-
-nav ul li
-{
-    list-style: none;
-    margin-bottom: 20px;
 }
 
 nav
 {
-   background-color: #1a1c23;
-   height: 1000px;
-
+    background-color: #23252b;
+    width: 150px;
+    border-radius: 12px;
+    padding: 20px 10px;
+    height: 100%;
+    flex-shrink: 0; /* Prevents sidebar from squishing */
 }
 
-nav ul li:hover {
+.navbar
+{
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    gap: 10px;    
+}
+
+a
+{
+    text-decoration: none;
+    display: block;
+    font-size: 20px;
+    color: #9e9e9e;
+    padding: 10px 15px; 
+    transition: 0.5s; 
+}
+
+a:hover 
+{
     background-color: #30333d;
-    border-width: 100%;
-    border-top: 10px;
-    border-bottom: 10px;
+    transition: 0.5s;
+    border-left: solid white; 
+    color: #ffffff;
 }
 
 .calculatedinfo
 {
     display: flex;
-    gap: 55px;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+    margin-top: 10px;
 }
 
 .infocard
 {
     background-color: #24262d; 
     color: #ffffff;
+    text-align: center;
     height: 150px;
     width: 200px;
     border-radius: 12px;
     border: 1px solid #30333d;
+    flex: 1 1 200px;
+    max-width: 100%;
+}
+
+p
+{
+    text-shadow: #121212;
+    font-size: 25px;
 }
 
 article 
 {
     display: flex;
-    justify-content: space-around;
-    padding: 20px;
-    height: 400px; 
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+    margin-top: 10px;
+    height: 350px; 
 }
 
-canvas 
+.tickets 
 {
-    max-width: 400px; 
-    max-height: 400px;
+    max-height: 320px;
+    max-width: 500px; 
+    padding: 20px 10px;
+    background-color:  #24262d;
+    border-radius: 12px;
 }
 
 #logo
 {   
     background: linear-gradient(cyan,violet);
     background-clip: text;
-    font-size: 50px;
+    font-size: 30px;
     font-family: Jokerman;
+    padding: 10px;
+    text-align: center;
     color: transparent
+}
+
+.priority
+{
+    max-height: 150px;
+    min-width: 378px;
+    background-color:  #24262d;
+    padding: 10px 0px 10px 10px;
+    border-radius: 12px;
+}
+
+.pending
+{
+    max-height: 320px;
+    max-width: 506px;
+    padding: 20px 10px;
+    background-color:  #24262d;
+    border-radius: 12px;
 }

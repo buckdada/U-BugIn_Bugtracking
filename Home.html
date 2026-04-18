@@ -8,37 +8,65 @@
 </head>
 <body>
     <div class="container">
-        <nav>
-            <aside id="logo">UBUGIN</aside>
-            <ul>
-                <li>
-                    <a href="#" id="btn-dashboard">Dashboard</a>  
-                </li>
-                <li><a href="#" id="btn-issues">Issues</a></li>
-                <li><a href="#" id="btn-people">People</a></li>
-                <li><a href="#" id="btn-project">Project</a></li>
-            </ul>
-        </nav>
+        <div style="padding: 10px;">
+            <nav>
+                <aside id="logo">UBUGIN</aside>
+                <div class="navbar">
+                <a href="#" id="btn-dashboard">Dashboard</a>
+                <a href="#" id="btn-issues">Issues</a>
+                <a href="#" id="btn-people">People</a>
+                <a href="#" id="btn-project">Project</a> 
+                </div>
+            </nav>
+        </div>
+       
         <main>
-            <header class="headbar"><div>space</div><div class="profile"></div></header>
+            
             <section id="Dashboard" class="view">
+                <header class="headbar"><h3 class="pagetitle">My Dashboard</h3><div class="profile"></div></header>
                 <div class="calculatedinfo">
-                <section class="infocard">Total issues</section>
-                <section class="infocard">Total project</section>
-                <section class="infocard">Available people</section>
-            </div>
-            <article>
-                <canvas id="barchart"></canvas>
-                <canvas id="pie"></canvas>
-            </article>
+                    <section class="infocard">
+                        <h3>Total Tickets</h3>
+                        <p>102</p>
+                    </section>
+                    <section class="infocard">
+                        <h3>Open</h3>
+                        <p>15</p>
+                    </section>
+                    <section class="infocard">
+                        <h3>In-Progress</h3>
+                        <p>15</p>
+                    </section>
+                    <section><canvas id="barchart" class="priority"></canvas></section>
+                </div>
+                    
+                
+                <article>
+                    <canvas id="pie" class="tickets"></canvas>
+                    <canvas id="pie2" class="pending"></canvas>
+                </article> 
+        
             </section>
-            <section id="Issues" class="view">Hello issues</section>
-            <section id="People" class="view">Hello people</section>
-            <section id="Projects" class="view">UGH Projects</section>
-    
+
+            <section id="Issues" class="view">
+                <header class="headbar"><h3 class="pagetitle">Issues</h3><div class="profile"></div></header>
+                <div>Hello issues</div>
+            </section>
+            <section id="People" class="view">
+                <header class="headbar"><h3 class="pagetitle">People</h3><div class="profile"></div></header>
+                <div>Hello people</div>
+            </section>
+            <section id="Projects" class="view">
+                <header class="headbar"><h3 class="pagetitle">My Projects</h3><div class="profile"></div></header>
+                <div>UGH Projects</div>
+            </section>
+
         </main>
+    
+   
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <script src="Homeapp.js"></script>
 </body>
 </html>
