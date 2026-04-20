@@ -27,12 +27,12 @@ const modalContent = document.getElementById("modalContent");
 // LOAD DROPDOWNS
 function loadDropdowns() {
     project.innerHTML = projects.map(p => `<option value="${p.id}">${p.name}</option>`).join("");
-    assigned.innerHTML = people.map(p => `<option value="${p.id}">${p.name} ${p.surname}</option>`).join("");
+    assigned.innerHTML = '<option value="">Unassigned</option>' + people.map(p => `<option value="${p.id}">${p.name} ${p.surname}</option>`).join("");
 }
 
 // NAVIGATION
 function goBack() {
-    window.location.href = "Home.html";
+    window.location.href = "Home.html"; 
 }
 
 // FORM
@@ -44,13 +44,15 @@ function hideForm() {
     formContainer.classList.add("d-none");
     issueForm.reset();
     issueId.value = "";
+    document.getElementById('resolutionDate').value = '';
+    document.getElementById('resolutionSummary').value = '';
 }
 
 // AUTO OVERDUE
 function checkOverdue(issue) {
     if (issue.status !== "resolved" && issue.targetDate) {
         let today = new Date().toISOString().split("T")[0];
-        if (issue.targetDate < today) {
+        if (issue.targetDate < today && issue.status !== 'resolved') {
             issue.status = "overdue";
         }
     }
@@ -62,6 +64,9 @@ issueForm.addEventListener("submit", function(e) {
     e.preventDefault();
 
     let id = issueId.value;
+    
+    // Get current date for identifiedDate if not provided
+    const currentDate = new Date().toISOString().split("T")[0];
 
     let issue = {
         id: id || Date.now(),
@@ -69,13 +74,13 @@ issueForm.addEventListener("submit", function(e) {
         description: description.value,
         status: status.value.toLowerCase(),
         priority: priority.value.toLowerCase(),
-        assignedTo: assigned.value,
+        assignedTo: assigned.value || null,
         project: project.value,
-        identifiedBy: people[0]?.id || '',
-        identifiedDate: dateCreated.value,
+        identifiedBy: people[0]?.id || null,
+        identifiedDate: dateCreated.value || currentDate,
         targetDate: targetDate.value,
         resolutionDate: resolutionDate.value || null,
-        resolutionSummary: resolutionSummary.value
+        resolutionSummary: resolutionSummary.value || ''
     };
 
     issue = checkOverdue(issue);
@@ -92,6 +97,11 @@ issueForm.addEventListener("submit", function(e) {
 
     hideForm();
     displayIssues();
+    
+    // Notify parent window to update dashboard
+    if (window.parent && window.parent.updateDashboardStats) {
+        window.parent.updateDashboardStats();
+    }
 });
 
 // DISPLAY
@@ -110,24 +120,37 @@ function displayIssues() {
         ) {
             const assignedPerson = people.find(p => p.id == issue.assignedTo);
             const assignedName = assignedPerson ? `${assignedPerson.name} ${assignedPerson.surname}` : 'Unassigned';
-            const projectName = projects.find(p => p.id == issue.project)?.name || issue.project;
+            const projectName = projects.find(p => p.id == issue.project)?.name || issue.project || 'Unknown';
+            
+            let statusClass = 'bg-info';
+            if (issue.status === 'resolved') statusClass = 'bg-success';
+            if (issue.status === 'overdue') statusClass = 'bg-danger';
+            
+            let priorityClass = 'bg-secondary';
+            if (issue.priority === 'high') priorityClass = 'bg-danger';
+            if (issue.priority === 'medium') priorityClass = 'bg-warning';
+            if (issue.priority === 'low') priorityClass = 'bg-success';
             
             issueTable.innerHTML += `
-            <tr>
-                <td>${issue.summary}</td>
-                <td><span class="badge bg-info">${issue.status}</span></td>
-                <td><span class="badge badge-${issue.priority}">${issue.priority}</span></td>
-                <td>${assignedName}</td>
-                <td>${projectName}</td>
-                <td>
-                    <button class="btn btn-sm btn-info" onclick="viewIssue(${issue.id})">View</button>
-                    <button class="btn btn-sm btn-warning" onclick="editIssue(${issue.id})">Edit</button>
-                    <button class="btn btn-sm btn-danger" onclick="deleteIssue(${issue.id})">Delete</button>
-                </td>
-            </tr>
+                <tr>
+                    <td>${issue.summary}</td>
+                    <td><span class="badge ${statusClass}">${issue.status}</span></td>
+                    <td><span class="badge ${priorityClass}">${issue.priority}</span></td>
+                    <td>${assignedName}</td>
+                    <td>${projectName}</td>
+                    <td>
+                        <button class="btn btn-sm btn-info" onclick="viewIssue(${issue.id})">View</button>
+                        <button class="btn btn-sm btn-warning" onclick="editIssue(${issue.id})">Edit</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteIssue(${issue.id})">Delete</button>
+                    </td>
+                </tr>
             `;
         }
     });
+    
+    if (issueTable.innerHTML === "") {
+        issueTable.innerHTML = '<tr><td colspan="6" style="text-align: center;">No issues found</td></tr>';
+    }
 
     localStorage.setItem('bugs', JSON.stringify(issues));
 }
@@ -136,11 +159,11 @@ function displayIssues() {
 function viewIssue(id) {
     let issue = issues.find(i => i.id == id);
     const assignedPerson = people.find(p => p.id == issue.assignedTo);
-    const projectName = projects.find(p => p.id == issue.project)?.name || issue.project;
+    const projectName = projects.find(p => p.id == issue.project)?.name || issue.project || 'Unknown';
 
     modalContent.innerHTML = `
         <p><b>Summary:</b> ${issue.summary}</p>
-        <p><b>Description:</b> ${issue.description}</p>
+        <p><b>Description:</b> ${issue.description || 'No description provided'}</p>
         <p><b>Project:</b> ${projectName}</p>
         <p><b>Assigned:</b> ${assignedPerson ? assignedPerson.name + ' ' + assignedPerson.surname : 'Unassigned'}</p>
         <p><b>Status:</b> ${issue.status}</p>
@@ -162,13 +185,13 @@ function editIssue(id) {
 
     issueId.value = issue.id;
     summary.value = issue.summary;
-    description.value = issue.description;
+    description.value = issue.description || '';
     status.value = issue.status.charAt(0).toUpperCase() + issue.status.slice(1);
     priority.value = issue.priority.charAt(0).toUpperCase() + issue.priority.slice(1);
-    assigned.value = issue.assignedTo;
+    assigned.value = issue.assignedTo || '';
     project.value = issue.project;
-    dateCreated.value = issue.identifiedDate;
-    targetDate.value = issue.targetDate;
+    dateCreated.value = issue.identifiedDate || '';
+    targetDate.value = issue.targetDate || '';
     resolutionDate.value = issue.resolutionDate || '';
     resolutionSummary.value = issue.resolutionSummary || '';
 }
@@ -180,6 +203,11 @@ function deleteIssue(id) {
         issues = issues.filter(i => i.id != id);
         localStorage.setItem('bugs', JSON.stringify(issues));
         displayIssues();
+        
+        // Notify parent window to update dashboard
+        if (window.parent && window.parent.updateDashboardStats) {
+            window.parent.updateDashboardStats();
+        }
     }
 }
 
