@@ -10,17 +10,24 @@
 
     <title>Document</title>
     <link rel="stylesheet" href="Homestyle.css">
+<link rel="stylesheet" href="project.css">
+    <link rel="stylesheet" href="auth.css">
+
 </head>
+
 <body>
     <div class="Dash-container">
         <div style="padding: 10px;">
             <nav>
                 <aside id="logo">UBUGIN</aside>
-                <div class="side-nav">
+<div class="side-nav">
                 <a href="#" id="btn-dashboard">Dashboard</a>
                 <a href="#" id="btn-issues">Issues</a>
                 <a href="#" id="btn-people">People</a>
                 <a href="#" id="btn-project">Project</a> 
+                </div>
+                <div class="auth-nav" id="authNav">
+                    <!-- Dynamic auth links populated by auth.js -->
                 </div>
             </nav>
         </div>
@@ -28,7 +35,7 @@
         <main>
             
             <section id="Dashboard" class="view">
-                <header class="headbar"><h3 class="pagetitle">My Dashboard</h3><div class="profile"></div></header>
+<h3 class="pagetitle">My Dashboard</h3><div class="profile"></div>
                 <div class="calculatedinfo">
                     <section class="infocard">
                         <h3>Total Tickets</h3>
@@ -54,7 +61,7 @@
             </section>
 <!--This is the issues page content -->
             <section id="Issues" class="view">
-                <header class="headbar"><h3 class="pagetitle">Issues</h3><div class="profile"></div></header>
+<h3 class="pagetitle">Issues</h3><div class="profile"></div>
                 <div class="issues-container mt-4">
 <!-- Top bar section  -->
  <div class="d-flex justify-content-between mb-3">
@@ -186,12 +193,12 @@
                 </div>
             </section>
             <section id="People" class="view">
-                <header class="headbar"><h3 class="pagetitle">People</h3><div class="profile"></div></header>
+<h3 class="pagetitle">People</h3><div class="profile"></div>
                 <div>Hello people</div>
             </section>
             <section id="Projects" class="view">
-                <header class="headbar"><h3 class="pagetitle">My Projects</h3><div class="profile"></div></header>
-                <div>UGH Projects</div>
+<h3 class="pagetitle">My Projects</h3><div class="profile"></div>
+                <div id="projects-list"></div>
             </section>
 
         </main>
@@ -201,9 +208,12 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="auth.js"></script>
     <script src="Infrastructure.js"></script>
     <script src="issuesPage.js"></script>
+    <script src="project.js"></script>
     <script src="Homeapp.js"></script>
     <script src="Charts.js"></script>
 </body>
 </html>
+
