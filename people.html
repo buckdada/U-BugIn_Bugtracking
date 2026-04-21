@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug Tracker - People Management</title>
+  <link rel="stylesheet" href="people.css">
+</head>
+<body>
+    <div class="people-container">
+       
+        <div class="people-header">
+            <h2>People Management</h2>
+            <button class="add-person-btn" onclick="showPersonModal()">
+                + Add Person
+            </button>
+        </div>
+        
+        
+        <div class="people-stats">
+            <div class="stat-card">
+                <h3>Total People</h3>
+                <p class="stat-number" id="totalPeopleCount">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Active</h3>
+                <p class="stat-number" id="activePeopleCount">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Inactive</h3>
+                <p class="stat-number" id="inactivePeopleCount">0</p>
+            </div>
+        </div>
+        
+      
+        <div class="people-search">
+            <input type="text" class="search-input" id="peopleSearch" placeholder="Search by name, username, or email...">
+            <select class="filter-select" id="statusFilter">
+                <option value="all">All Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+            </select>
+        </div>
+        
+       
+        <div id="peopleList" class="people-grid"></div>
+    </div>
+
+    <div id="personModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="personModalTitle">Add Person</h3>
+                <span class="close-modal" onclick="closePersonModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="personForm">
+                    <input type="hidden" id="personId">
+                    <div class="form-group">
+                        <label for="personName">First Name *</label>
+                        <input type="text" id="personName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="personSurname">Last Name *</label>
+                        <input type="text" id="personSurname" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="personUsername">Username *</label>
+                        <input type="text" id="personUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="personEmail">Email *</label>
+                        <input type="email" id="personEmail" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="cancel-btn" onclick="closePersonModal()">Cancel</button>
+                        <button type="submit" class="submit-btn">Save Person</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    
+    <script src="people.js"></script>
+</body>
+</html>
