@@ -1,6 +1,6 @@
 let people = JSON.parse(localStorage.getItem('people')) || [];
 let projects = JSON.parse(localStorage.getItem('projects')) || [];
-let bugs = JSON.parse(localStorage.getItem('bugs')) || [];
+let issues = JSON.parse(localStorage.getItem('issues')) || [];
 
 
 function createPerson(name, surname, email, username) {
@@ -29,13 +29,13 @@ function createProject(name) {
 function saveToStorage() {
     localStorage.setItem('people', JSON.stringify(people));
     localStorage.setItem('projects', JSON.stringify(projects));
-    localStorage.setItem('bugs', JSON.stringify(bugs));
+    localStorage.setItem('issues', JSON.stringify(issues));
 }
 
 
 function seedDatabase() {
    
-    if (bugs.length === 0) {
+    if (issues.length === 0) {
         
         if (people.length === 0) createPerson("Admin", "User", "admin@ubugin.com", "admin_main");
         if (projects.length === 0) createProject("Core System Development");
@@ -100,7 +100,7 @@ function seedDatabase() {
                 identifiedDate: "2026-04-16", targetDate: "2026-04-19", resolutionDate: null, resolutionSummary: "" 
             }
         ];
-        bugs = sampleBugs;
+        issues = sampleBugs;
         saveToStorage();
         console.log("Database seeded with 11 varied issues.");
     }
@@ -108,4 +108,3 @@ function seedDatabase() {
 
 
 seedDatabase();
-

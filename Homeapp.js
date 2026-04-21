@@ -1,79 +1,51 @@
-Chart.register(ChartDataLabels);
-const ctx1 = document.getElementById('barchart').getContext('2d');
-const myBarChart = new Chart(ctx1,{
-    type:'bar',
-    data:{
-        labels: ['High priority','Medium priority','Low priority'],
-        datasets:[{
-            label: 'Issue priority',
-            data:[12,35,20],
-            backgroundColor:
-            [
-                '#ff52527c',
-                '#4489ff75',
-                '#ffd64075',
-            ],
-            borderColor:
-            [
-                '#ff5252',
-                '#448aff',
-                '#ffd740'
-            ],
-            borderWidth: 1,
-            barPercentage: 0.3,
-            categoryPercentage: 0.9,
-            
-        }]
-    },
-    options:{ indexAxis: 'y',plugins:{legend:{display: false},datalabels: { color:'#ffffff',anchor: 'end', align: 'right',offset: 5,font:{weight:'bold'}}},scales:{x:{display: false, grid:{display: false}, max:50 ,beginAtZero: true},y:{ grid:{display:false,drawBorder:false},ticks:{color:'#9e9e9e'}}}}
-});
 
-const ctx2 = document.getElementById('pie').getContext('2d');
-const myPieChart = new Chart(ctx2,{
-    type:'doughnut',
-    data:{
-        labels: ['Open','Overdue','Resolved'],
-        datasets:[{
-            label: 'Project Status',
-            data:[15,21,44],
-            backgroundColor:
-            [
-                'cyan',
-                '#ff5252',
-                '#00e676',
-            ],
-            borderColor:
-            [
-                '#ffffff',
-            ],
-            borderWidth: 1
-        }]
+let openTic = 0;
+let overdueTic = 0;
+let resolvedTic = 0;
+
+let high = 0;
+let med = 0;
+let low = 0;
+
+let started = 0;
+let notStarted = 0;
+
+
+function getstats()
+{
+    openTic = issues.filter(ticket => ticket.status === 'Open').length;
+    overdueTic = issues.filter(ticket => ticket.status === 'Overdue').length;
+    resolvedTic = issues.filter(ticket => ticket.status === 'Resolved').length;
+
+    high = issues.filter(ticket => ticket.priority === 'high'|| ticket.priority === 'High').length,
+    med = issues.filter(ticket => ticket.priority === 'medium' || ticket.priority === 'Medium').length,
+    low = issues.filter(ticket => ticket.priority === 'low' || ticket.priority === 'Low').length
+
+    let maxVal = Math.max(high, med, low); 
+    let chartMax = maxVal > 0 ? Math.ceil(maxVal * 1.5) : 10;
+
+    started = projects.length;
+    notStarted = Math.max(0, openTic - started);
+    
+    document.querySelector('.totalTickets').innerHTML = issues.length;
+    document.querySelector('.openTickets').innerHTML = openTic;
+    document.querySelector('.pendingTickets').innerHTML = started;
+
+    if (typeof myPieChart !== 'undefined') {
+        myPieChart.data.datasets[0].data = [openTic, overdueTic, resolvedTic];
+        myPieChart.update();
     }
-});
-
-
-const ctx3 = document.getElementById('pie2').getContext('2d');
-const myPendingChart = new Chart(ctx3,{
-    type:'doughnut',
-    data:{
-        labels: ['In-progress','Not Started'],
-        datasets:[{
-            label: 'Pending Status',
-            data:[20,41],
-            backgroundColor:
-            [
-                '#00e676',
-                '#1a1c23'
-            ],
-            borderColor:
-            [
-                'cyan',
-                '#00e676'
-            ],
-            borderWidth: 1
-        }]
+    if (typeof myPendingChart !== 'undefined') {
+        myPendingChart.data.datasets[0].data = [started, notStarted];
+        myPendingChart.update();
     }
-});
+    if (typeof myBarChart !== 'undefined') {
+        myBarChart.data.datasets[0].data = [high, med, low];
+        myBarChart.options.scales.x.max = chartMax;
+        myBarChart.update();
+    }
+}
+
 
 function showView(viewId) 
 {
@@ -84,8 +56,9 @@ function showView(viewId)
     document.getElementById(viewId).style.display = 'block';
 }
 
-document.getElementById('btn-dashboard').addEventListener('click', () => showView('Dashboard'));
-document.getElementById('btn-issues').addEventListener('click', () => showView('Issues'));
+document.getElementById('btn-dashboard').addEventListener('click', () => {showView('Dashboard');getstats();});
+document.getElementById('btn-issues').addEventListener('click', () => {showView('Issues'); initIssuesPage();});//Loads the issues page functions when clicked
 document.getElementById('btn-people').addEventListener('click', () => showView('People'));
 document.getElementById('btn-project').addEventListener('click', () => showView('Projects'));
 showView('Dashboard');
+getstats();

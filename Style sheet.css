@@ -1,11 +1,8 @@
-body {
-    font-family: Arial;
-    background-color: #f4f4f4;
-}
-
-.container {
+#Issues .issues-container {
     width: 80%;
     margin: auto;
+    font-family: Arial;
+    background-color: #f4f4f4;
 }
 
 .top-bar {
@@ -14,7 +11,7 @@ body {
     margin: 20px 0;
 }
 
-button {
+#Issues button {
     padding: 8px 12px;
     border: none;
     background-color: #007bff;
@@ -36,13 +33,13 @@ button:hover {
     display: none;
 }
 
-input, select, textarea {
+#Issues input, #Issues select, #Issues textarea {
     width: 100%;
     margin: 5px 0;
     padding: 8px;
 }
 
-table {
+#Issues table {
     width: 100%;
     background: white;
     border-collapse: collapse;

@@ -3,16 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="Homestyle.css">
-    <link rel="stylesheet" href="project.css">
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="Style sheet.css">
+
     <title>Document</title>
+    <link rel="stylesheet" href="Homestyle.css">
 </head>
 <body>
-    <div class="container">
+    <div class="Dash-container">
         <div style="padding: 10px;">
             <nav>
                 <aside id="logo">UBUGIN</aside>
-                <div class="navbar">
+                <div class="side-nav">
                 <a href="#" id="btn-dashboard">Dashboard</a>
                 <a href="#" id="btn-issues">Issues</a>
                 <a href="#" id="btn-people">People</a>
@@ -28,15 +32,15 @@
                 <div class="calculatedinfo">
                     <section class="infocard">
                         <h3>Total Tickets</h3>
-                        <p>102</p>
+                        <p class="totalTickets">No Tickets</p>
                     </section>
                     <section class="infocard">
                         <h3>Open</h3>
-                        <p>15</p>
+                        <p class="openTickets">None</p>
                     </section>
                     <section class="infocard">
                         <h3>In-Progress</h3>
-                        <p>15</p>
+                        <p class="pendingTickets">None</p>
                     </section>
                     <section><canvas id="barchart" class="priority"></canvas></section>
                 </div>
@@ -48,10 +52,138 @@
                 </article> 
         
             </section>
-
+<!--This is the issues page content -->
             <section id="Issues" class="view">
                 <header class="headbar"><h3 class="pagetitle">Issues</h3><div class="profile"></div></header>
-                <div>Hello issues</div>
+                <div class="issues-container mt-4">
+<!-- Top bar section  -->
+ <div class="d-flex justify-content-between mb-3">
+    <button class="btn btn-secondary" onclick="showView('Dashboard')"> ⬅️Back</button>
+    <button class="btn btn-primary" onclick="showForm()"> + Add Issue</button>
+</div>
+
+<h2>Issue ticket tracker</h2>
+
+<!-- Search and filter section   -->
+  <div class="row mb-3">
+    <div class="col">
+        <label ><b>Search</b></label>
+        <input type="text" id="search" class="form-control" placeholder="Search issues...">
+    </div>
+    <div class="col">
+        <label ><b>Filter</b></label>
+        <select id="filterStatus" class="form-control">
+            <option value="">select status option </option>
+            <option>Open</option>
+            <option>Resolved</option>
+            <option>Overdue</option>
+        </select>
+    </div>
+  </div>
+
+<!-- Form section-->
+<div id="formContainer" class="card p-3 mb-3 d-none">
+<form id="issueForm">
+
+<input type="hidden" id="issueId">
+
+<div class="row">
+    <div class="col">
+        <label><b>Summary</b></label>
+        <input type="text" id="summary" placeholder="e.g Login button is not working" class="form-control"  required>
+    </div>
+
+    <div class="col">
+        <label><b>Project</b></label>
+        <select id="project" class="form-control"></select>
+    </div>
+</div>
+
+<label class="mt-2"><b>Description</b></label>
+<textarea id="description" placeholder="Describe the issue in detail, What happened and when?" class="form-control"></textarea>
+
+<div class="row mt-2">
+    <div class="col">
+        <label><b>Status</b></label>
+        <select id="status" class="form-control">
+            <option>Open</option>
+            <option>Resolved</option>
+            <option>Overdue</option>
+        </select>
+    </div>
+
+    <div class="col">
+        <label> <b>Priority</b></label>
+        <select id="priority" class="form-control">
+            <option>Low</option>
+            <option>Medium</option>
+            <option>High</option>
+        </select>
+    </div>
+</div>
+
+<div class="row mt-2">
+    <div class="col">
+        <label><b>Assigned To</b></label>
+        <select id="assigned" class="form-control"></select>
+    </div>
+
+    <div class="col">
+        <label><b>Date created</b></label>
+        <input type="date" id="dateCreated" class="form-control" required>
+    </div>
+
+    <div class="col">
+        <label><b>Target date </b></label>
+        <input type="date" id="targetDate" class="form-control" required>
+    </div>
+</div>
+
+<div class="row mt-2">
+    <div class="col">
+        <label><b>Resolution Date</b></label>
+        <input type="date" id="resolutionDate" class="form-control">
+    </div>
+
+    <div class="col">
+        <label><b>Resolution Summary</b></label>
+        <input type="text" id="resolutionSummary" placeholder="summary of how the issue solved " class="form-control">
+    </div>
+</div>
+
+<button class="btn btn-success mt-3">Save</button>
+<button type="button" class="btn btn-danger mt-3" onclick="hideForm()">Cancel</button>
+
+</form>
+</div>
+
+<!--issues results table  -->
+<table class="table table-bordered table-striped">
+<thead class="table-dark">
+<tr>
+    
+    <th>Summary </th>
+    <th>Status</th>
+    <th>Priority</th>
+    <th>Assigned to</th>
+    <th>Project type </th>
+    <th>Actions</th>
+</tr>
+</thead>
+<tbody id="issueTable"></tbody>
+</table>
+
+<!-- Issues modal  -->
+<div class="modal fade" id="viewModal">
+<div class="modal-dialog">
+<div class="modal-content p-3">
+<h4>Issue Details</h4>
+<div id="modalContent"></div>
+<button class="btn btn-secondary mt-2" data-bs-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
+                </div>
             </section>
             <section id="People" class="view">
                 <header class="headbar"><h3 class="pagetitle">People</h3><div class="profile"></div></header>
@@ -59,18 +191,19 @@
             </section>
             <section id="Projects" class="view">
                 <header class="headbar"><h3 class="pagetitle">My Projects</h3><div class="profile"></div></header>
-                <div id="projects-list"></div>
-            
+                <div>UGH Projects</div>
             </section>
 
         </main>
     
    
     </div>
-     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="Infrastructure.js"></script>
+    <script src="issuesPage.js"></script>
     <script src="Homeapp.js"></script>
-    <script src="project.js"></script>
+    <script src="Charts.js"></script>
 </body>
 </html>
