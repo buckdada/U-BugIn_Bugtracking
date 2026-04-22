@@ -8,8 +8,10 @@
 - Status pie chart of Open/Resolved/Overdue
 - Priority bar chart of High/Medium/Low
 - Status pie chart of Started/Not Started
-    **Started:** How many projects are there?
-    **Not Started:** How tickets are open - How many projects are there?
+
+>**Started:** How many projects are there?
+
+>**Not Started:** How tickets are open - How many projects are there?
 ## SINGLE PAGE APPLICATION(SPA)
 - Each anchor in the navigation bar(sidebar) hides all pages execpt the clicked one.
 - When the website loads or refreshes it always loads the Dashboard page.
