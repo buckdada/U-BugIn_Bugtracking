@@ -8,26 +8,23 @@
 
     <link rel="stylesheet" href="Style sheet.css">
 
-    <title>Document</title>
+    <link rel="stylesheet" href="project.css">
+
+    <link rel="stylesheet" href="people.css">
+
     <link rel="stylesheet" href="Homestyle.css">
-<link rel="stylesheet" href="project.css">
-    <link rel="stylesheet" href="auth.css">
-
+    <title>U-BUGIN</title>
 </head>
-
 <body>
     <div class="Dash-container">
         <div style="padding: 10px;">
             <nav>
                 <aside id="logo">UBUGIN</aside>
-<div class="side-nav">
+                <div class="side-nav">
                 <a href="#" id="btn-dashboard">Dashboard</a>
                 <a href="#" id="btn-issues">Issues</a>
                 <a href="#" id="btn-people">People</a>
                 <a href="#" id="btn-project">Project</a> 
-                </div>
-                <div class="auth-nav" id="authNav">
-                    <!-- Dynamic auth links populated by auth.js -->
                 </div>
             </nav>
         </div>
@@ -35,7 +32,7 @@
         <main>
             
             <section id="Dashboard" class="view">
-<h3 class="pagetitle">My Dashboard</h3><div class="profile"></div>
+                <header class="headbar"><h3 class="pagetitle">My Dashboard</h3><div class="profile"></div></header>
                 <div class="calculatedinfo">
                     <section class="infocard">
                         <h3>Total Tickets</h3>
@@ -61,7 +58,7 @@
             </section>
 <!--This is the issues page content -->
             <section id="Issues" class="view">
-<h3 class="pagetitle">Issues</h3><div class="profile"></div>
+                <header class="headbar"><h3 class="pagetitle">Issues</h3><div class="profile"></div></header>
                 <div class="issues-container mt-4">
 <!-- Top bar section  -->
  <div class="d-flex justify-content-between mb-3">
@@ -192,12 +189,90 @@
 </div>
                 </div>
             </section>
+<!--This is the people page content-->
             <section id="People" class="view">
-<h3 class="pagetitle">People</h3><div class="profile"></div>
-                <div>Hello people</div>
+                <header class="headbar"><h3 class="pagetitle">People</h3><div class="profile"></div></header>
+                <div class="people-container">
+
+                    <div class="people-header">
+                    <h2>People Management</h2>
+                    <button class="add-person-btn" onclick="showPersonModal()">
+                        + Add Person
+                    </button>
+                    </div>
+                
+                    <div class="people-stats">
+                    <div class="stat-card">
+                        <h3>Total People</h3>
+                        <p class="stat-number" id="totalPeopleCount">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Active</h3>
+                        <p class="stat-number" id="activePeopleCount">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Inactive</h3>
+                        <p class="stat-number" id="inactivePeopleCount">0</p>
+                    </div>
+                    </div>
+                
+            
+                    <div class="people-search">
+                    <input type="text" class="search-input" id="peopleSearch" placeholder="Search by name, username, or email...">
+                    <select class="filter-select" id="statusFilter">
+                        <option value="all">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                    </div>
+                
+            
+                    <div id="peopleList" class="people-grid"></div>
+                </div>
+                <div id="personModal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 id="personModalTitle">Add Person</h3>
+                            <span class="close-modal" onclick="closePersonModal()">&times;</span>
+                        </div>
+                        <div class="modal-body">
+                            <form id="personForm">
+                                <input type="hidden" id="personId">
+                                <div class="form-group">
+                                    <label for="personName">First Name *</label>
+                                    <input type="text" id="personName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="personSurname">Last Name *</label>
+                                    <input type="text" id="personSurname" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="personUsername">Username *</label>
+                                    <input type="text" id="personUsername" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="personEmail">Email *</label>
+                                    <input type="email" id="personEmail" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="personStatus">Status *</label>
+                                    <select id="personStatus" required>
+                                        <option value="active">Active</option>
+                                        <option value="inactive">Inactive</option>
+                                    </select>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="button" class="cancel-btn" onclick="closePersonModal()">Cancel</button>
+                                    <button type="submit" class="submit-btn">Save Person</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
             </section>
             <section id="Projects" class="view">
-<h3 class="pagetitle">My Projects</h3><div class="profile"></div>
+                <header class="headbar"><h3 class="pagetitle">My Projects</h3><div class="profile"></div></header>
                 <div id="projects-list"></div>
             </section>
 
@@ -208,12 +283,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="auth.js"></script>
-    <script src="issuesPage.js"></script>
-    <script src="project.js"></script>
+    <script src="Infrastructure.js"></script>
+    <script src="project.js"></script><script src="issuesPage.js"></script>
+    <script src="people.js"></script>
     <script src="Homeapp.js"></script>
     <script src="Charts.js"></script>
-    <script src="people.js"></script>
 </body>
 </html>
-

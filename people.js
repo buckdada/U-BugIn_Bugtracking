@@ -38,6 +38,7 @@ function loadPeople() {
 function savePeople(people) {
     localStorage.setItem(PEOPLE_STORAGE_KEY, JSON.stringify(people));
     renderPeopleList();
+    updatePeopleStats();
    
     if (typeof updateDashboardStats === 'function') {
         updateDashboardStats();
@@ -58,23 +59,61 @@ function generateNewPersonId() {
         }
     }
     const newNum = maxNum + 1;
-    return person_${String(newNum).padStart(3, '0')};
+    return `person_${String(newNum).padStart(3, '0')}`;
 }
 
+
+function updatePeopleStats() {
+    const people = loadPeople();
+    const totalCount = people.length;
+    const activeCount = people.filter(p => p.status === 'active').length;
+    const inactiveCount = people.filter(p => p.status === 'inactive').length;
+    
+    const totalElement = document.getElementById('totalPeopleCount');
+    const activeElement = document.getElementById('activePeopleCount');
+    const inactiveElement = document.getElementById('inactivePeopleCount');
+    
+    if (totalElement) totalElement.textContent = totalCount;
+    if (activeElement) activeElement.textContent = activeCount;
+    if (inactiveElement) inactiveElement.textContent = inactiveCount;
+}
 
 function renderPeopleList() {
     const container = document.getElementById('peopleList');
     if (!container) return;
     
     const people = loadPeople();
+    const searchInput = document.getElementById('peopleSearch');
+    const filterSelect = document.getElementById('statusFilter');
     
-    if (people.length === 0) {
-        container.innerHTML = '<div class="empty-state">No people added yet. Click "+ Add Person" to get started!</div>';
+    let filteredPeople = people;
+    
+    // Apply filter by status
+    if (filterSelect && filterSelect.value !== 'all') {
+        filteredPeople = filteredPeople.filter(p => p.status === filterSelect.value);
+    }
+    
+    // Apply search
+    if (searchInput && searchInput.value) {
+        const searchTerm = searchInput.value.toLowerCase();
+        filteredPeople = filteredPeople.filter(p => 
+            p.firstName.toLowerCase().includes(searchTerm) ||
+            p.lastName.toLowerCase().includes(searchTerm) ||
+            p.username.toLowerCase().includes(searchTerm) ||
+            p.email.toLowerCase().includes(searchTerm)
+        );
+    }
+    
+    if (filteredPeople.length === 0) {
+        container.innerHTML = '<div class="empty-state">No people found. Click "+ Add Person" to get started!</div>';
         return;
     }
     
     container.innerHTML = '';
-    for (const person of people) {
+    for (const person of filteredPeople) {
+        const statusClass = person.status === 'active' ? 'status-active' : 'status-inactive';
+        const statusText = person.status === 'active' ? '✓ Active' : '✗ Inactive';
+        
         const personCard = document.createElement('div');
         personCard.className = 'person-card';
         personCard.innerHTML = `
@@ -84,9 +123,13 @@ function renderPeopleList() {
                     <h4>${escapeHtml(person.firstName)} ${escapeHtml(person.lastName)}</h4>
                     <p class="person-username">@${escapeHtml(person.username)}</p>
                     <p class="person-email">${escapeHtml(person.email)}</p>
+                    <p class="person-status ${statusClass}">${statusText}</p>
                 </div>
             </div>
             <div class="person-actions">
+                <button class="status-toggle-btn" data-id="${person.id}" data-status="${person.status}">
+                    ${person.status === 'active' ? '🔴 Make Inactive' : '🟢 Make Active'}
+                </button>
                 <button class="edit-btn" data-id="${person.id}">✏️ Edit</button>
                 <button class="delete-btn" data-id="${person.id}">🗑️ Delete</button>
             </div>
@@ -95,6 +138,7 @@ function renderPeopleList() {
       
         const editBtn = personCard.querySelector('.edit-btn');
         const deleteBtn = personCard.querySelector('.delete-btn');
+        const statusToggleBtn = personCard.querySelector('.status-toggle-btn');
         
         editBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -106,8 +150,15 @@ function renderPeopleList() {
             deletePerson(person.id);
         });
         
+        statusToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            togglePersonStatus(person.id);
+        });
+        
         container.appendChild(personCard);
     }
+    
+    updatePeopleStats();
 }
 
 
@@ -158,8 +209,9 @@ function editPerson(id) {
     const lastNameField = document.getElementById('personSurname');
     const emailField = document.getElementById('personEmail');
     const usernameField = document.getElementById('personUsername');
+    const statusField = document.getElementById('personStatus');
     
-    if (!modal || !title || !idField || !firstNameField || !lastNameField || !emailField || !usernameField) return;
+    if (!modal || !title || !idField || !firstNameField || !lastNameField || !emailField || !usernameField || !statusField) return;
     
     title.textContent = 'Edit Person';
     idField.value = person.id;
@@ -167,6 +219,7 @@ function editPerson(id) {
     lastNameField.value = person.lastName;
     emailField.value = person.email;
     usernameField.value = person.username;
+    statusField.value = person.status || 'active';
     modal.style.display = 'flex';
 }
 
@@ -180,6 +233,18 @@ function deletePerson(id) {
     }
 }
 
+function togglePersonStatus(id) {
+    let people = loadPeople();
+    const personIndex = people.findIndex(p => p.id === id);
+    
+    if (personIndex !== -1) {
+        const newStatus = people[personIndex].status === 'active' ? 'inactive' : 'active';
+        people[personIndex].status = newStatus;
+        savePeople(people);
+        alert(`Person status changed to ${newStatus}!`);
+    }
+}
+
 
 function savePerson(event) {
     event.preventDefault();
@@ -189,14 +254,16 @@ function savePerson(event) {
     const lastNameField = document.getElementById('personSurname');
     const emailField = document.getElementById('personEmail');
     const usernameField = document.getElementById('personUsername');
+    const statusField = document.getElementById('personStatus');
     
-    if (!idField || !firstNameField || !lastNameField || !emailField || !usernameField) return;
+    if (!idField || !firstNameField || !lastNameField || !emailField || !usernameField || !statusField) return;
     
     const id = idField.value;
     const firstName = firstNameField.value.trim();
     const lastName = lastNameField.value.trim();
     const email = emailField.value.trim();
     const username = usernameField.value.trim();
+    const status = statusField.value;
     
     if (!firstName || !lastName || !email || !username) {
         alert('Please fill in all fields');
@@ -219,7 +286,8 @@ function savePerson(event) {
                 firstName, 
                 lastName, 
                 email, 
-                username 
+                username,
+                status
             };
             savePeople(people);
             alert('Person updated successfully!');
@@ -238,7 +306,7 @@ function savePerson(event) {
             firstName,
             lastName,
             email,
-            status: 'active'
+            status: status || 'active'
         };
         people.push(newPerson);
         savePeople(people);
@@ -267,8 +335,19 @@ function initPeopleModule() {
         });
     }
     
+    // Add search and filter event listeners
+    const searchInput = document.getElementById('peopleSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', renderPeopleList);
+    }
+    
+    const filterSelect = document.getElementById('statusFilter');
+    if (filterSelect) {
+        filterSelect.addEventListener('change', renderPeopleList);
+    }
    
     renderPeopleList();
+    updatePeopleStats();
 }
 
 
@@ -276,8 +355,10 @@ window.showPersonModal = showPersonModal;
 window.closePersonModal = closePersonModal;
 window.editPerson = editPerson;
 window.deletePerson = deletePerson;
+window.togglePersonStatus = togglePersonStatus;
 window.savePerson = savePerson;
 window.initPeopleModule = initPeopleModule;
+window.updatePeopleStats = updatePeopleStats;
 
 
 if (document.readyState === 'loading') {

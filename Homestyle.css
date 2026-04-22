@@ -1,7 +1,21 @@
 body
 {
     overflow: hidden;
-    background: linear-gradient(135deg, burlywood 0%, cyan 60%, violet 100%);
+    background: linear-gradient(135deg, burlywood,cyan , violet,burlywood,cyan, violet,burlywood,cyan,violet);
+    background-size: 400%;
+    animation: animate-gradient 10s linear infinite;
+}
+
+@keyframes animate-gradient 
+{
+    0%
+    {
+        background-position: left;
+    }
+    50%
+    {
+        background-position: right;
+    }   
 }
 
 .Dash-container
@@ -29,13 +43,13 @@ main
     background-color: #24262dd0;
     backdrop-filter:blur(30px);
     border-radius: 12px;
-    height: 50px;
+    height: 60px;
     width: 100%;
 }
 
 #Dashboard .pagetitle, #Issues .pagetitle, #People .pagetitle, #Projects .pagetitle
 {
-    margin: 0;
+    margin: 5px 0px;
     padding: 10px;
     color: aliceblue;
 }
@@ -44,6 +58,7 @@ main
 {
     height: 50px;
     width: 50px;
+    margin: 5px 2px;
     border-radius: 50%;
     background-size: cover;   
     background-position: center;
@@ -88,10 +103,10 @@ a
 
 a:hover 
 {
-    background-color: #30333d;
+    background: linear-gradient(45deg,cyan, violet);
     transition: 0.5s;
-    border-left: solid white; 
-    color: #ffffff;
+    border-left: solid burlywood; 
+    color: black;
 }
 
 .calculatedinfo

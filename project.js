@@ -1,7 +1,7 @@
 // project.js - Handles projects display with persistence and CRUD in #Projects section
 
 // Load projects from localStorage, default sample data
-let projects = JSON.parse(localStorage.getItem('ubugin-projects')) || [
+projects = JSON.parse(localStorage.getItem('projects')) || [
     { id: 1, name: 'Project Alpha' },
     { id: 2, name: 'U-BugIn Bugtracker' },
     { id: 3, name: 'Web Dashboard' },
@@ -11,7 +11,7 @@ let projects = JSON.parse(localStorage.getItem('ubugin-projects')) || [
 
 // Save to localStorage
 function saveProjects() {
-    localStorage.setItem('ubugin-projects', JSON.stringify(projects));
+    localStorage.setItem('projects', JSON.stringify(projects));
 }
 
 // Get next available ID
@@ -83,18 +83,4 @@ function renderProjects() {
         });
         container.appendChild(card);
     });
-}
-
-// Extend showView
-const originalShowView = window.showView;
-window.showView = function(viewId) {
-    originalShowView(viewId);
-    if (viewId === 'Projects') {
-        renderProjects();
-    }
-};
-
-// Initial render
-if (document.getElementById('Projects').style.display !== 'none') {
-    renderProjects();
 }
