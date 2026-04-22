@@ -1,96 +1,39 @@
-// GET ELEMENTS 
 let issues = JSON.parse(localStorage.getItem("issues")) || [];
 
-let summary, description, t_status, priority, assigned, project;
-let dateCreated, targetDate, resolutionDate;
-let resolutionSummary, issueId;
-let formContainer, issueForm, issueTable;
-let search, filterStatus, modalContent;
+// STATIC DATA
+let people = ["John Doe", "Jane Smith", "Bob Johnson"];
+let projects = ["Project Alpha", " U-BugIn Bugtracker", "Web Dashboard","Issue Management System","Team Collaboration Tool"];
 
-function initIssuesPage() {
+// GET ELEMENTS (FIX)
+const formContainer = document.getElementById("formContainer");
+const issueForm = document.getElementById("issueForm");
+const issueTable = document.getElementById("issueTable");
 
-    formContainer = document.getElementById("formContainer");
-    issueForm = document.getElementById("issueForm");
-    issueTable = document.getElementById("issueTable");
+const summary = document.getElementById("summary");
+const description = document.getElementById("description");
+const status = document.getElementById("status");
+const priority = document.getElementById("priority");
+const assigned = document.getElementById("assigned");
+const project = document.getElementById("project");
+const dateCreated = document.getElementById("dateCreated");
+const targetDate = document.getElementById("targetDate");
+const resolutionDate = document.getElementById("resolutionDate");
+const resolutionSummary = document.getElementById("resolutionSummary");
+const issueId = document.getElementById("issueId");
 
-    issueForm.addEventListener("submit", handleSubmit);
-
-    summary = document.getElementById("summary");
-    description = document.getElementById("description");
-    t_status = document.getElementById("status");
-    priority = document.getElementById("priority");
-    assigned = document.getElementById("assigned");
-    project = document.getElementById("project");
-    dateCreated = document.getElementById("dateCreated");
-    targetDate = document.getElementById("targetDate");
-    resolutionDate = document.getElementById("resolutionDate");
-    resolutionSummary = document.getElementById("resolutionSummary");
-    issueId = document.getElementById("issueId");
-
-    search = document.getElementById("search");
-    filterStatus = document.getElementById("filterStatus");
-    modalContent = document.getElementById("modalContent");
-
-    // SAVE
-  
-
-    function handleSubmit(e) {
-        e.preventDefault();
-
-        let id = issueId.value;
-
-        let issue = {
-            id: id || Date.now(),
-            summary: summary.value,
-            description: description.value,
-            status: t_status.value,
-            priority: priority.value,
-            assigned: assigned.value,
-            project: project.value,
-            dateCreated: dateCreated.value,
-            targetDate: targetDate.value,
-            resolutionDate: resolutionDate.value,
-            resolutionSummary: resolutionSummary.value
-        };
-
-        checkOverdue(issue);
-
-        if (id) {
-            issues = issues.map(i => i.id == id ? issue : i);
-        } else {
-            issues.push(issue);
-        }
-
-        localStorage.setItem("issues", JSON.stringify(issues));
-
-        hideForm();
-        displayIssues();
-        getstats();
-    }
-
-    // INIT
-    loadDropdowns();
-    displayIssues();
-
-    search.addEventListener("input", displayIssues);
-    filterStatus.addEventListener("change", displayIssues);
-}
-
- 
+const search = document.getElementById("search");
+const filterStatus = document.getElementById("filterStatus");
+const modalContent = document.getElementById("modalContent");
 
 // LOAD DROPDOWNS
 function loadDropdowns() {
+    project.innerHTML = projects.map(p => `<option>${p}</option>`).join("");
+    assigned.innerHTML = people.map(p => `<option>${p}</option>`).join("");
+}
 
-    let peopleData = JSON.parse(localStorage.getItem("bug_tracker_people")) || [];
-   let projectData = JSON.parse(localStorage.getItem("ubugin-projects")) || [];
-
-    project.innerHTML = projectData.map(p =>
-        `<option value="${p.id}">${p.name}</option>`
-    ).join("");
-
-    assigned.innerHTML = peopleData.map(p =>
-        `<option value="${p.id}">${p.firstName} ${p.lastName}</option>`
-    ).join("");
+// NAVIGATION
+function goBack() {
+    window.location.href = "home.html";
 }
 
 // FORM
@@ -108,16 +51,48 @@ function hideForm() {
 function checkOverdue(issue) {
     if (issue.status !== "Resolved" && issue.targetDate) {
         let today = new Date().toISOString().split("T")[0];
-
         if (issue.targetDate < today) {
             issue.status = "Overdue";
         }
     }
 }
 
+// SAVE
+issueForm.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    let id = issueId.value;
+
+    let issue = {
+        id: id || Date.now(),
+        summary: summary.value,
+        description: description.value,
+        status: status.value,
+        priority: priority.value,
+        assigned: assigned.value,
+        project: project.value,
+        dateCreated: dateCreated.value,
+        targetDate: targetDate.value,
+        resolutionDate: resolutionDate.value,
+        resolutionSummary: resolutionSummary.value
+    };
+
+    checkOverdue(issue);
+
+    if (id) {
+        issues = issues.map(i => i.id == id ? issue : i);
+    } else {
+        issues.push(issue);
+    }
+
+    localStorage.setItem("issues", JSON.stringify(issues));
+
+    hideForm();
+    displayIssues();
+});
+
 // DISPLAY
 function displayIssues() {
-
     let searchValue = search.value.toLowerCase();
     let filterValue = filterStatus.value;
 
@@ -131,20 +106,19 @@ function displayIssues() {
             issue.summary.toLowerCase().includes(searchValue) &&
             (filterValue === "" || issue.status === filterValue)
         ) {
-
             issueTable.innerHTML += `
-                <tr>
-                    <td>${issue.summary}</td>
-                    <td><span class="badge bg-info">${issue.status}</span></td>
-                    <td><span class="badge badge-${issue.priority.toLowerCase()}">${issue.priority}</span></td>
-                    <td>${issue.assigned}</td>
-                    <td>${issue.project}</td>
-                    <td>
-                        <button class="btn btn-sm btn-info" onclick="viewIssue(${issue.id})">View</button>
-                        <button class="btn btn-sm btn-warning" onclick="editIssue(${issue.id})">Edit</button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteIssue(${issue.id})">Delete</button>
-                    </td>
-                </tr>
+            <tr>
+                <td>${issue.summary}</td>
+                <td><span class="badge bg-info">${issue.status}</span></td>
+                <td><span class="badge badge-${issue.priority.toLowerCase()}">${issue.priority}</span></td>
+                <td>${issue.assigned}</td>
+                <td>${issue.project}</td>
+                <td>
+                    <button class="btn btn-sm btn-info" onclick="viewIssue(${issue.id})">View</button>
+                    <button class="btn btn-sm btn-warning" onclick="editIssue(${issue.id})">Edit</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteIssue(${issue.id})">Delete</button>
+                </td>
+            </tr>
             `;
         }
     });
@@ -154,7 +128,6 @@ function displayIssues() {
 
 // VIEW
 function viewIssue(id) {
-
     let issue = issues.find(i => i.id == id);
 
     modalContent.innerHTML = `
@@ -175,7 +148,6 @@ function viewIssue(id) {
 
 // EDIT
 function editIssue(id) {
-
     let issue = issues.find(i => i.id == id);
 
     showForm();
@@ -183,7 +155,7 @@ function editIssue(id) {
     issueId.value = issue.id;
     summary.value = issue.summary;
     description.value = issue.description;
-    t_status.value = issue.status;
+    status.value = issue.status;
     priority.value = issue.priority;
     assigned.value = issue.assigned;
     project.value = issue.project;
@@ -194,6 +166,7 @@ function editIssue(id) {
 }
 
 // DELETE
+
 function deleteIssue(id) {
 
     let confirmDelete = confirm("Are you sure you want to delete this issue?");
@@ -204,14 +177,17 @@ function deleteIssue(id) {
         displayIssues();
     }
 }
-
-function loadIssues() {
-    let data = localStorage.getItem("issues");
-    issues = data ? JSON.parse(data) : [];
+/*
+function deleteIssue(id) {
+    issues = issues.filter(i => i.id != id);
+    localStorage.setItem("issues", JSON.stringify(issues));
+    displayIssues();
 }
+*/
+// EVENTS
+search.addEventListener("input", displayIssues);
+filterStatus.addEventListener("change", displayIssues);
 
-console.log(issueForm);
-
-document.addEventListener("DOMContentLoaded", function() {
-    initIssuesPage();
-});
+// INIT
+loadDropdowns();
+displayIssues();
