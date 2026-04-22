@@ -1,4 +1,3 @@
-
 let openTic = 0;
 let overdueTic = 0;
 let resolvedTic = 0;
@@ -13,13 +12,13 @@ let notStarted = 0;
 
 function getstats()
 {
-    openTic = issues.filter(ticket => ticket.status === 'Open').length;
-    overdueTic = issues.filter(ticket => ticket.status === 'Overdue').length;
-    resolvedTic = issues.filter(ticket => ticket.status === 'Resolved').length;
+    openTic = issues.filter(ticket => ticket.status === 'Open'|| ticket.status === 'open').length;
+    overdueTic = issues.filter(ticket => ticket.status === 'Overdue'|| ticket.status === 'overdue').length;
+    resolvedTic = issues.filter(ticket => ticket.status === 'Resolved'|| ticket.status === 'resolved').length;
 
-    high = issues.filter(ticket => ticket.priority === 'high'|| ticket.priority === 'High').length,
-    med = issues.filter(ticket => ticket.priority === 'medium' || ticket.priority === 'Medium').length,
-    low = issues.filter(ticket => ticket.priority === 'low' || ticket.priority === 'Low').length
+    high = issues.filter(ticket => ticket.priority === 'high' || ticket.priority === 'High').length;
+    med = issues.filter(ticket => ticket.priority === 'medium' || ticket.priority === 'Medium').length;
+    low = issues.filter(ticket => ticket.priority === 'low' || ticket.priority === 'Low').length;
 
     let maxVal = Math.max(high, med, low); 
     let chartMax = maxVal > 0 ? Math.ceil(maxVal * 1.5) : 10;
@@ -58,7 +57,7 @@ function showView(viewId)
 
 document.getElementById('btn-dashboard').addEventListener('click', () => {showView('Dashboard');getstats();});
 document.getElementById('btn-issues').addEventListener('click', () => {showView('Issues'); initIssuesPage();});//Loads the issues page functions when clicked
-document.getElementById('btn-people').addEventListener('click', () => showView('People'));
-document.getElementById('btn-project').addEventListener('click', () => showView('Projects'));
+document.getElementById('btn-people').addEventListener('click', () => {showView('People');initPeopleModule();});
+document.getElementById('btn-project').addEventListener('click', () => {showView('Projects');renderProjects();});
 showView('Dashboard');
 getstats();
